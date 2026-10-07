@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Password Generator</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            font-family: Arial, sans-serif;
+            background: #111;
+            color: white;
+        }
+
+        .container {
+            width: 420px;
+            padding: 35px;
+
+            background: #1c1c1c;
+            border-radius: 16px;
+
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            margin-top: 0;
+            text-align: center;
+        }
+
+        .description {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+
+            border: none;
+            border-radius: 8px;
+
+            background: #2b2b2b;
+            color: white;
+
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 15px;
+            padding: 14px;
+
+            border: none;
+            border-radius: 8px;
+
+            background: #fff;
+            color: #111;
+
+            font-size: 16px;
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.85;
+        }
+
+        .password {
+            margin-top: 25px;
+            padding: 15px;
+
+            border-radius: 8px;
+
+            background: #111;
+            border: 1px solid #333;
+
+            text-align: center;
+
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 18px;
+        }
+
+        .error {
+            margin-top: 15px;
+            color: #ff6b6b;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🔐 Генератор паролей</h1>
+
+    <p class="description">
+        Создай случайный пароль из букв и цифр
+    </p>
+
+    <form method="POST">
+
+        <input
+            type="number"
+            name="length"
+            placeholder="Длина пароля"
+            min="1"
+            required
+            value="{{ length }}"
+        >
+
+        <button type="submit">
+            Сгенерировать
+        </button>
+
+    </form>
+
+    {% if password %}
+        <div class="password">
+            {{ password }}
+        </div>
+    {% endif %}
+
+    {% if error %}
+        <div class="error">
+            {{ error }}
+        </div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>
