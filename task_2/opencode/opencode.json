@@ -1,0 +1,38 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "llama/qwen2.5-3b-instruct",
+  "permission": {
+    "*": "deny"
+  },
+  "agent": {
+    "telegram-chat": {
+      "description": "Fast, tool-free Telegram conversation",
+      "mode": "primary",
+      "temperature": 0.6,
+      "prompt": "You are a concise Russian-speaking chat assistant. Answer the user's latest message directly and naturally. If they ask a question, try to answer it instead of saying you do not know without reason. Use light conversational humor only when it fits. Do not use tools.",
+      "permission": {
+        "*": "deny"
+      }
+    }
+  },
+  "provider": {
+    "llama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Local llama.cpp",
+      "options": {
+        "baseURL": "http://llama:8080/v1",
+        "apiKey": "local",
+        "timeout": 300000
+      },
+      "models": {
+        "qwen2.5-3b-instruct": {
+          "name": "Qwen2.5 3B Instruct (local GGUF)",
+          "limit": {
+            "context": 3072,
+            "output": 128
+          }
+        }
+      }
+    }
+  }
+}

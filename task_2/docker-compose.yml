@@ -1,0 +1,76 @@
+services:
+  bot:
+    build:
+      context: ./bot
+    env_file:
+      - .env
+    environment:
+      OPENCODE_URL: http://opencode:4096
+      LLM_TIMEOUT_SECONDS: "${LLM_TIMEOUT_SECONDS:-310}"
+      HISTORY_DB_PATH: /data/chat-history.sqlite3
+    volumes:
+      - bot-history:/data
+    depends_on:
+      opencode:
+        condition: service_started
+    networks:
+      - backend
+    restart: unless-stopped
+
+  opencode:
+    image: ghcr.io/anomalyco/opencode:latest
+    working_dir: /workspace
+    environment:
+      OPENCODE_CONFIG: /etc/opencode/opencode.json
+    volumes:
+      - ./opencode/opencode.json:/etc/opencode/opencode.json:ro
+      - opencode-data:/root/.local/share/opencode
+    command:
+      - serve
+      - --hostname
+      - 0.0.0.0
+      - --port
+      - "4096"
+    depends_on:
+      llama:
+        condition: service_started
+    networks:
+      - backend
+    restart: unless-stopped
+
+  llama:
+    build:
+      context: ./llama
+    command:
+      - --model
+      - /models/${LLAMA_MODEL_FILE:-qwen2.5-3b-instruct-q4_k_m.gguf}
+      - --alias
+      - qwen2.5-3b-instruct
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8080"
+      - --ctx-size
+      - "${LLAMA_CONTEXT_SIZE:-3072}"
+      - --threads
+      - "${LLAMA_THREADS:-8}"
+      - --threads-batch
+      - "${LLAMA_THREADS_BATCH:-8}"
+      - --n-predict
+      - "${LLAMA_N_PREDICT:-128}"
+      - --parallel
+      - "1"
+      - --no-webui
+    volumes:
+      - ./llama/models:/models:ro
+    networks:
+      - backend
+    restart: unless-stopped
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  bot-history:
+  opencode-data:
